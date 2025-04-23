@@ -32,22 +32,53 @@ class MinHeap(Heap):
                 break
  
     def extract(self):
-        pass
+        """
+        Removes and returns the minimum element from the MinHeap.
+        Maintains the MinHeap property after removal.
+        """
+        # Check if heap is empty
+        if self.is_empty():
+            raise IndexError("Cannot extract from an empty heap.")
+        
+        # Element to return
+        min_value = self._heap[0]
+        
+        # Move the last element to the root and shrink the heap
+        popped = self._heap.pop()
+        if not self.is_empty():
+            self._heap[0] = popped
+            self._heapify_down(0)
+        
+        # Return the minimum value from heap
+        return min_value
     
-
     def _heapify_down(self, index):
-        pass
+        """
+        Restores the MinHeap property by bubbling down the element at `index`.
+        """
+        size = self.size()
+        while self._left_child(index) < size:
+            # Get left and right index
+            left_index = self._left_child(index)
+            right_index = self._right_child(index)
+            
+            # Find the smaller of the two children
+            smallest_index = left_index
+            if right_index < size and self._heap[right_index] < self._heap[left_index]:
+                smallest_index = right_index
+            
+            # Swap if current is greater than the smallest child
+            if self._heap[index] > self._heap[smallest_index]:
+                self._swap(index, smallest_index)
+                index = smallest_index
+            else:
+                break
 
 if __name__ == "__main__":
     min_heap = MinHeap()
-    min_heap.insert(4)
-    min_heap.insert(40)
-    min_heap.insert(20)
-    min_heap.insert(30)
-    min_heap.insert(10)
+    for value in [50, 10, 15, 20, 30, 40]:
+        min_heap.insert(value)
 
-    print(min_heap._heap)  # Output should be [10, 20, 30, 40]
-
-#       4
-#   10      20
-# 40  30
+    print("Before extract:", min_heap._heap)
+    print("Extracted:", min_heap.extract())
+    print("After extract:", min_heap._heap)
