@@ -35,37 +35,37 @@ class Heap(ABC):
         return self._heap[0]
     
     # ------- Internal Utility Methods (used by insert and extract) -------
-    def parent(self, index):
+    def _parent(self, index):
         """
         Returns the index of the parent of the given index.
         """
         return (index-1)//2
     
-    def left_child(self, index):
+    def _left_child(self, index):
         """
         Returns the index of the left child of the given index.
         """
         return (2 * index) + 1
     
-    def right_child(self, index):
+    def _right_child(self, index):
         """
         Returns the index of the right child of the given index.
         """
         return (2 * index) + 2
     
-    def has_left(self, index):
+    def _has_left(self, index):
         """
         Checks if the current index has a left child.
         """
         return self.left_child(index) < self.size()
     
-    def has_left(self, index):
+    def _has_left(self, index):
         """
         Checks if the current index has a right child.
         """
         return self.right_child(index) < self.size()
     
-    def swap(self, i, j):
+    def _swap(self, i, j):
         """
         Swaps elements at indices i and j in the heap array.
         """
