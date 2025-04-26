@@ -422,6 +422,124 @@ if __name__ == "__main__":
 ![alt text](image-1.png)
 
 
+# Patterns in Heaps
+## Pattern 1: Kth Largest / Kth Smallest Element in an Array
+
+### Goal of the Pattern
+#### Problem Statement (in general):
+- Given an array of numbers, find the Kth largest or Kth smallest element.
+
+#### Intuition: Why Heaps?
+Imagine we’re given a huge unsorted list:
+
+```python
+[10, 3, 5, 11, 20, 8, 9]
+```
+
+- We’re asked:
+    - What is the 3rd largest element?
+
+#### Solutions:
+##### Brute Force
+- **Approach**:
+    - **Sort it → O(n log n)**
+    - Pick `n - k` index
+- **But... that's not efficient if:**
+    - Array is huge
+    - We're doing this repeatedly (like in a stream)
+
+##### Better Way: Use a Heap!
+- Core Idea:
+    - Find Kth Largest Element → use a MinHeap of size k
+        - Why MinHeap? You want to always kick out the smallest so the top k largest remain.
+    - Find Kth Smallest Element → use a MaxHeap of size k
+        - Why MaxHeap? You want to always kick out the largest so the top k smallest remain.
+
+###### Let’s Visualize This
+- Example: Find 3rd largest in `[10, 3, 5, 11, 20, 8, 9]`
+We'll use a MinHeap of size 3
+- Insert 10 → [10]
+- Insert 3 → [3, 10]
+- Insert 5 → [3, 10, 5] 
+    - (Heap auto-reorders: [3, 10, 5] → [3, 5, 10])
+- Insert 11
+    - Heap size > k now → pop min (3)
+    - Heap becomes [5, 10, 11]
+- Insert 20
+    - Heap size > 3 → pop min (5)
+    - Heap → [10, 11, 20]
+- Insert 8
+    - Heap size > 3 → pop min (8)
+    - But 8 < 10 → so we don’t insert it
+- Insert 9
+    - Same logic → doesn’t enter heap
+
+- ✅ Final MinHeap (size 3): [10, 11, 20]
+- ⏩ Answer = heap[0] = 10 = 3rd largest element
+
+###### Key Insight:
+- We don’t need to sort the whole array — you just maintain a smart size-k heap.
+- Time Complexity:
+    - Each insert: O(log k)
+    - n elements → O(n log k)
+- Which is much better than O(n log n) if k ≪ n.
+
+###### For Kth Smallest?
+- Use a MaxHeap of size k. Same logic, just inverted comparison.
+
+#### What does “smart size-k heap” mean?
+It means we:
+- ✅ Use a heap data structure (MinHeap or MaxHeap)
+- ✅ Only ever keep exactly k elements inside it
+- ✅ Insert new values only if they can potentially be part of the final answer
+
+- How it works — step-by-step:
+- Let’s say we're solving:
+    - "Find the 3rd largest element in an array."
+    - We’ll use a MinHeap of size k = 3.
+
+##### Initial Steps:
+- Start with an empty heap
+- Loop through each element in the array
+    - For each element:
+        - If heap size < k → just push it in
+        - Else:
+            - Compare the element with the heap's root (smallest of the top k)
+            - If it's larger, pop the root and push the new element
+        - Else, ignore it (not in the top k)
+
+##### Visualization:
+- Array: [10, 3, 5, 11, 20, 8, 9]
+- Heap type: MinHeap
+- k = 3 (we want 3rd largest)
+
+![alt text](image-2.png)
+
+##### What makes this "smart"?
+- We're not storing unnecessary elements
+- We’re only keeping track of the top k elements
+- We’re minimizing the number of operations (inserts/pops are O(log k))
+- This is what we mean by "maintaining a smart size-k heap."
+
+###### Quick Python Code Concept (MinHeap for Kth Largest):
+```python
+import heapq
+
+def find_kth_largest(nums, k):
+    min_heap = []
+
+    for num in nums:
+        heapq.heappush(min_heap, num)
+        if len(min_heap) > k:
+            heapq.heappop(min_heap)
+
+    return min_heap[0]  # root of heap = kth largest
+```
+
+
+
+
+
 
 
 
