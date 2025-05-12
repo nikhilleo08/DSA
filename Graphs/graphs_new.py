@@ -1,3 +1,4 @@
+from collections import deque
 class Graph:
     def __init__(self, directed):
         self.graph = {}
@@ -39,7 +40,22 @@ class Graph:
         for vertex, neighbors in self.graph.items():
             print(f"{vertex}: {neighbors}")
 
-
+    def bfs(self, v):
+        visited = set()
+        res = []
+        q = deque()
+        q.append(v)
+        visited.add(v)
+        while q:
+            popped = q.popleft()
+            res.append(popped)
+            
+            for n in self.graph[popped]:
+                if n not in visited:
+                    q.append(n)
+                    visited.add(n)
+        return res
+    
 g = Graph(directed=False)
 g.add_edge("A", "B")
 g.add_edge("B", "C")
@@ -50,3 +66,11 @@ g = Graph(directed=True)
 g.add_edge("A", "B")
 g.add_edge("B", "C")
 g.print_graph()
+
+g_bfs = Graph(directed=False)
+g_bfs.add_edge("A", "B")
+g_bfs.add_edge("A", "C")
+g_bfs.add_edge("B", "D")
+g_bfs.add_edge("C", "E")
+
+print("BFS starting from A:", g_bfs.bfs("A"))
